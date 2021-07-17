@@ -9,16 +9,21 @@ document.addEventListener('DOMContentLoaded', function() {
  //need to switch gif generator to await the results of the Aztro API Fetch, and plug in the mood instead of the sign directly
 
  function appControlFlow() {
-  let aztroURL = createAztroFetchUrl();
-  fetchAztroData(aztroURL);
-  //  clearGifs();
+  let userInputSign = document.querySelector(`#sign`).value;
+  let userSelectedDay = document.querySelector(`#day`).value;
+    let aztroURL = createAztroFetchUrl(userInputSign, userSelectedDay);
+    fetchAztroData(aztroURL);
+    clearGifs();
+    let giphyURL = createGiphyFetchUrl(userInputSign)
+    fetchGiphyData(giphyURL);
   //  renderGifs();
   }
 
-function createAztroFetchUrl() {
-    let userInputSign = document.querySelector(`#sign`).value;
-    let userSelectedDay = document.querySelector(`#day`).value;
-    const aztroURL = `https://aztro.sameerkumar.website?sign=${userInputSign}&day=${userSelectedDay}`;
+
+
+//*****BEGIN ACCESS HOROSCOPE LOGIC****
+function createAztroFetchUrl(userInputSign, userSelectedDay) {
+    let aztroURL = `https://aztro.sameerkumar.website?sign=${userInputSign}&day=${userSelectedDay}`;
   return aztroURL;
 }
 
@@ -39,6 +44,8 @@ function fetchAztroData(aztroURL) {
       console.log(`Your Mood: ${json.mood}`)
     })
 }
+//*****END ACCESS HOROSCOPE LOGIC****
+
 
 
   //****BEGIN GENERATE GIF LOGIC****
@@ -50,25 +57,27 @@ function clearGifs() {
 }
 
 
-async function renderGifs(){
-    console.log(`renderMemes FIRED`)
-    let userInputSign = captureUserInput();
-    fetchGiphyAPIResults(userInputSign);
-}
+// async function renderGifs(){
+//     console.log(`renderMemes FIRED`)
+//     let userInputSign = captureUserInput();
+//     fetchGiphyAPIResults(userInputSign);
+// }
 
 
-function captureUserInput() {
-    console.log(`captureUserInput FIRED`)
-    let userInputSign = document.querySelector(`#sign`).value;
-    return userInputSign;
-}
+// function captureUserInput() {
+//     console.log(`captureUserInput FIRED`)
+//     let userInputSign = document.querySelector(`#sign`).value;
+//     return userInputSign;
+// }
 
-
-
-function fetchGiphyAPIResults(userInput) {
+function createGiphyFetchUrl(userInputSign){
     let giphyAPIKey = `DZltucdua4H0cmMrv8M5wNuJ1Dlf74Ci`;
-    let URLTemplate = `https://api.giphy.com/v1/gifs/search?q=${userInput}&rating=g&api_key=${giphyAPIKey}`;
-    fetch(URLTemplate)
+    let URLTemplate = `https://api.giphy.com/v1/gifs/search?q=${userInputSign}&rating=g&api_key=${giphyAPIKey}`;
+  return URLTemplate;
+}
+
+function fetchGiphyData(giphyURL) {
+    fetch(giphyURL)
         .then( response => response.json() )
         .then( data => {
             //actual gif entries minus irrelevant metadata
